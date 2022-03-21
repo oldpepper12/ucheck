@@ -1,6 +1,8 @@
+<!DOCTYPE html>
 <html>
 
 <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <!--mui-inject-first-->
     <style type="text/css">
         svg:not(:root).svg-inline--fa {
@@ -2319,16 +2321,31 @@
     </div>
 
     <div>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
         <script>
             let timestampEl = document.getElementById("uc-when");
             let nameEl = document.getElementById("uc-name");
-            
-            if (!localStorage.getItem("name")) {
-                nameEl.innerText = "John Smith (click to change name)"
-            } else {
-                nameEl.innerText = localStorage.getItem("name");
+
+            function renderName(name) {
+                if (name.startsWith("$") && name.endsWith("$")) {
+                    katex.render("\\displaystyle "+name.slice(1, name.length - 1), nameEl, {
+                        throwOnError: false,
+                        displayMode: false
+                    });
+                } else{
+                    nameEl.innerText = name;
+                }
+                
             }
 
+            
+            if (!localStorage.getItem("name")) {
+                renderName("John Smith (click to change name)");
+            } else {
+                renderName(localStorage.getItem("name"));
+            }
+
+    
             // set the ucheck completed date to, like, 24 minutes ago
             let now = new Date(Date.now() - (1000 * 60 * 24));
             let months = ["January", "Febuary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -2363,7 +2380,7 @@
             nameEl.addEventListener("click", ()=>{
                 let newName = prompt("Enter in a new name");
                 if (!newName) return;
-                nameEl.innerText = newName;
+                renderName(newName);
                 localStorage.setItem("name", newName);
             })
         </script>
